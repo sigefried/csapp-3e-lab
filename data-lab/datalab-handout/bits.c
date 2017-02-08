@@ -138,8 +138,9 @@ NOTES:
  *   Max ops: 8
  *   Rating: 1
  */
+//#include<stdio.h>
 int bitAnd(int x, int y) {
-  return 2;
+  return ~(~x|~y);
 }
 /* 
  * getByte - Extract byte n from word x
@@ -150,15 +151,7 @@ int bitAnd(int x, int y) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
-
-
-
-
-
-
-
-  return 2;
-
+  return (x >> (n << 3)) & 0xff;
 }
 /* 
  * logicalShift - shift x to the right by n, using a logical shift
@@ -169,7 +162,9 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  return 2;
+	int mask = ~(~(~0 << n) << (32 + 1 + ~n));
+	x >>= n;
+	return (x & mask);
 }
 /*
  * bitCount - returns count of number of 1's in word
@@ -179,7 +174,18 @@ int logicalShift(int x, int n) {
  *   Rating: 4
  */
 int bitCount(int x) {
-  return 2;
+	int bits, mask;
+	bits = 0;
+	mask = 0x1 | (0x1 << 8) | (0x1 << 16) | (0x1 << 24);
+	bits += (x & mask);
+	bits += ((x >> 1) & mask);
+	bits += ((x >> 2) & mask);
+	bits += ((x >> 3) & mask);
+	bits += ((x >> 4) & mask);
+	bits += ((x >> 5) & mask);
+	bits += ((x >> 6) & mask);
+	bits += ((x >> 7) & mask);
+	return (bits & 0xFF) + ((bits >> 8) & 0xFF) + ((bits >> 16) & 0xFF) + ((bits >> 24) & 0xFF);
 }
 /* 
  * bang - Compute !x without using !
@@ -189,7 +195,9 @@ int bitCount(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+	int lsb = x & (~x + 1);
+	int flag = ~lsb + 1;
+  return ~(flag >> 31) & 1;
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -198,7 +206,7 @@ int bang(int x) {
  *   Rating: 1
  */
 int tmin(void) {
-  return 2;
+  return 1 << 31;
 }
 /* 
  * fitsBits - return 1 if x can be represented as an 
@@ -210,7 +218,9 @@ int tmin(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-  return 2;
+	int shifts;
+	shifts = 32 + ~n + 1;
+  return !(x^(x << shifts >> shifts));
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -221,7 +231,9 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+	int sign;
+	sign = (x >> 31) & 0x01;
+	return (x + (sign << n) + (~sign) + 1) >> n;
 }
 /* 
  * negate - return -x 
@@ -231,7 +243,7 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return ~x + 1;
 }
 /* 
  * isPositive - return 1 if x > 0, return 0 otherwise 
@@ -241,7 +253,7 @@ int negate(int x) {
  *   Rating: 3
  */
 int isPositive(int x) {
-  return 2;
+  return !((x >> 31) & 1) & !!x;
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -251,7 +263,11 @@ int isPositive(int x) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+	int sign_x, sign_y, sign_x_m_y;
+	sign_x = x >> 31 & 0x1;
+	sign_y = y >> 31 & 0x1; 
+	sign_x_m_y = ((x + ~y + 1) >> 31) & 0x1;
+  return (!(x ^ y)) | ((!(sign_x ^ sign_y)) & sign_x_m_y) | ((sign_x ^ sign_y) & sign_x);
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
@@ -261,7 +277,33 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4
  */
 int ilog2(int x) {
-  return 2;
+	int mask1, mask2, mask3, mask4, mask5;
+	// fill all the bit less than MSB
+	// another way to count bits ref: http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
+	x = x | (x >> 1);
+	x = x | (x >> 2);
+	x = x | (x >> 4);
+	x = x | (x >> 8);
+	x = x | (x >> 16);
+	//mask1 = 0x55555555;
+	//mask2 = 0x33333333;
+	//mask3 = 0x0F0F0F0F;
+	//mask4 = 0x00FF00FF;
+	//mask5 = 0x0000FFFF;
+	mask1 = 0x55 << 8 | 0x55;
+	mask1 = mask1 << 16 | mask1;
+	mask2 = 0x33 << 8 | 0x33;
+	mask2 = mask2 << 16 | mask2;
+	mask3 = 0x0F << 8 | 0x0F;
+	mask3 = mask3 << 16 | mask3;
+	mask4 = 0xFF << 16 | 0xFF;
+	mask5 = 0xFF << 8 | 0xFF;
+	x = (x & mask1) + ((x >> 1) & mask1);
+	x = (x & mask2) + ((x >> 2) & mask2);
+	x = (x & mask3) + ((x >> 4) & mask3);
+	x = (x & mask4) + ((x >> 8) & mask4);
+	x = (x & mask5) + ((x >> 16) & mask5);
+	return x + (~1) + 1; //x - 1
 }
 /* 
  * float_neg - Return bit-level equivalent of expression -f for
@@ -275,7 +317,11 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
- return 2;
+	int mask = 0xFF << 23;
+	int frac = 0x7FFFFF & uf;
+	if ((mask & uf) == mask && frac)
+		return uf;
+	return uf ^ (1 << 31);
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
@@ -287,7 +333,25 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-  return 2;
+	int mask, sign, e, frac;
+	if (x == 0) return 0;
+	mask = 1 << 31;
+	sign = x & mask;
+	e = 158;
+	if (x == mask) { //tmin
+		return mask | (e << 23);
+	}
+	if (sign)
+		x = ~x + 1;
+
+	while (!(x&mask)) {
+		x = x<<1;
+		e = e -1;
+	}
+	frac = (x&(~mask)) >> 8;
+	if (x&0x80 && ((x&0x7F) > 0 || frac&1)) //round
+		frac = frac + 1;
+	return sign + (e<<23) + frac;
 }
 /* 
  * float_twice - Return bit-level equivalent of expression 2*f for
@@ -301,5 +365,16 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-  return 2;
+	int exp, frac;
+	exp = (uf >> 23) & 0xff;
+	frac = uf & 0x7fffff;
+	if (exp == 0xff)
+		return uf;
+	else if (exp == 0){
+		uf &=  0xFF800000;
+		uf += (frac << 1);
+		return uf;
+	} else {
+		return uf + 0x800000;
+	}
 }
