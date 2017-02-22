@@ -1,0 +1,109 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BIAS	fshow.c	10;"	d	file:
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -O -Wall -m32$/;"	m
+Driverhdrs	Driverhdrs.pm	/^package Driverhdrs;$/;"	p
+Driverlib	Driverlib.pm	/^package Driverlib;$/;"	p
+EXP_MASK	fshow.c	12;"	d	file:
+EXP_SIZE	fshow.c	9;"	d	file:
+FLOAT_SIZE	fshow.c	7;"	d	file:
+FRAC_MASK	fshow.c	11;"	d	file:
+FRAC_SIZE	fshow.c	8;"	d	file:
+LIBS	Makefile	/^LIBS = -lm$/;"	m
+MAX_TEST_VALS	btest.c	47;"	d	file:
+Signal	btest.c	/^handler_t *Signal(int signum, handler_t *handler) $/;"	f
+TEST_RANGE	btest.c	42;"	d	file:
+TIMEOUT_LIMIT	btest.c	35;"	d	file:
+TMax	decl.c	6;"	d	file:
+TMin	decl.c	5;"	d	file:
+arg_ranges	btest.h	/^    int arg_ranges[3][2];   \/* Argument ranges. Always defined for 3 args, even if *\/$/;"	m	struct:__anon1
+args	btest.h	/^    int args;               \/* Number of function arguments *\/$/;"	m	struct:__anon1
+argval	btest.c	/^static unsigned argval[3] = {0,0,0};$/;"	v	file:
+bang	bits.c	/^int bang(int x) {$/;"	f
+bitAnd	bits.c	/^int bitAnd(int x, int y) {$/;"	f
+bitCount	bits.c	/^int bitCount(int x) {$/;"	f
+check_nickname	driver.pl	/^sub check_nickname {$/;"	s
+clean	driver.pl	/^sub clean {$/;"	s
+divpwr2	bits.c	/^int divpwr2(int x, int n) {$/;"	f
+driver_post	Driverlib.pm	/^sub driver_post ($$) {$/;"	s
+envbuf	btest.c	/^sigjmp_buf envbuf;$/;"	v
+f2u	fshow.c	/^unsigned f2u(float f)$/;"	f
+f2u	tests.c	/^unsigned f2u(float f) {$/;"	f
+fitsBits	bits.c	/^int fitsBits(int x, int n) {$/;"	f
+float_i2f	bits.c	/^unsigned float_i2f(int x) {$/;"	f
+float_neg	bits.c	/^unsigned float_neg(unsigned uf) {$/;"	f
+float_twice	bits.c	/^unsigned float_twice(unsigned uf) {$/;"	f
+funct1_t	btest.h	/^typedef int (*funct1_t)(int);$/;"	t
+funct2_t	btest.h	/^typedef int (*funct2_t)(int, int); $/;"	t
+funct3_t	btest.h	/^typedef int (*funct3_t)(int, int, int); $/;"	t
+funct_t	btest.h	/^typedef int (*funct_t) (void);$/;"	t
+gen_vals	btest.c	/^static int gen_vals(int test_vals[], int min, int max, int test_range, int arg)$/;"	f	file:
+getByte	bits.c	/^int getByte(int x, int n) {$/;"	f
+get_exp	fshow.c	/^unsigned get_exp(unsigned uf)$/;"	f
+get_frac	fshow.c	/^unsigned get_frac(unsigned uf)$/;"	f
+get_num_val	btest.c	/^static int get_num_val(char *sval, unsigned *valp) {$/;"	f	file:
+get_num_val	fshow.c	/^static int get_num_val(char *sval, unsigned *valp) {$/;"	f	file:
+get_num_val	ishow.c	/^static int get_num_val(char *sval, unsigned *valp) {$/;"	f	file:
+get_sign	fshow.c	/^unsigned get_sign(unsigned uf)$/;"	f
+global_rating	btest.c	/^static int global_rating = 0;$/;"	v	file:
+grade	btest.c	/^static int grade = 0;$/;"	v	file:
+handler_t	btest.c	/^typedef void handler_t(int);$/;"	t	file:
+has_arg	btest.c	/^static int has_arg[3] = {0,0,0};$/;"	v	file:
+ilog2	bits.c	/^int ilog2(int x) {$/;"	f
+isLessOrEqual	bits.c	/^int isLessOrEqual(int x, int y) {$/;"	f
+isPositive	bits.c	/^int isPositive(int x) {$/;"	f
+logicalShift	bits.c	/^int logicalShift(int x, int n) {$/;"	f
+main	btest.c	/^int main(int argc, char *argv[])$/;"	f
+main	fshow.c	/^int main(int argc, char *argv[])$/;"	f
+main	ishow.c	/^int main(int argc, char *argv[])$/;"	f
+name	btest.h	/^    char *name;             \/* String name *\/$/;"	m	struct:__anon1
+negate	bits.c	/^int negate(int x) {$/;"	f
+op_limit	btest.h	/^    int op_limit;           \/* Max number of ops allowed in solution *\/$/;"	m	struct:__anon1
+ops	btest.h	/^    char *ops;              \/* List of legal operators. Special case: "$" for floating point *\/$/;"	m	struct:__anon1
+random_val	btest.c	/^static int random_val(int min, int max)$/;"	f	file:
+rating	btest.h	/^    int rating;             \/* Problem rating (1 -- 4) *\/$/;"	m	struct:__anon1
+run_tests	btest.c	/^static int run_tests() $/;"	f	file:
+show_float	fshow.c	/^void show_float(unsigned uf)$/;"	f
+show_int	ishow.c	/^void show_int(unsigned uf)$/;"	f
+solution_funct	btest.h	/^    funct_t solution_funct; \/* Function *\/$/;"	m	struct:__anon1
+submitr	Driverlib.pm	/^sub submitr ($$$$$$) {$/;"	s
+test_0_arg	btest.c	/^static int test_0_arg(funct_t f, funct_t ft, char *name)$/;"	f	file:
+test_1_arg	btest.c	/^static int test_1_arg(funct_t f, funct_t ft, int arg1, char *name)$/;"	f	file:
+test_2_arg	btest.c	/^static int test_2_arg(funct_t f, funct_t ft, int arg1, int arg2, char *name)$/;"	f	file:
+test_3_arg	btest.c	/^static int test_3_arg(funct_t f, funct_t ft, $/;"	f	file:
+test_bang	tests.c	/^int test_bang(int x)$/;"	f
+test_bitAnd	tests.c	/^int test_bitAnd(int x, int y)$/;"	f
+test_bitCount	tests.c	/^int test_bitCount(int x) {$/;"	f
+test_divpwr2	tests.c	/^int test_divpwr2(int x, int n)$/;"	f
+test_fitsBits	tests.c	/^int test_fitsBits(int x, int n)$/;"	f
+test_float_i2f	tests.c	/^unsigned test_float_i2f(int x) {$/;"	f
+test_float_neg	tests.c	/^unsigned test_float_neg(unsigned uf) {$/;"	f
+test_float_twice	tests.c	/^unsigned test_float_twice(unsigned uf) {$/;"	f
+test_fname	btest.c	/^static char* test_fname = NULL;  $/;"	v	file:
+test_funct	btest.h	/^    funct_t test_funct;     \/* Test function *\/$/;"	m	struct:__anon1
+test_function	btest.c	/^static int test_function(test_ptr t) {$/;"	f	file:
+test_getByte	tests.c	/^int test_getByte(int x, int n)$/;"	f
+test_ilog2	tests.c	/^int test_ilog2(int x) {$/;"	f
+test_isLessOrEqual	tests.c	/^int test_isLessOrEqual(int x, int y)$/;"	f
+test_isPositive	tests.c	/^int test_isPositive(int x) {$/;"	f
+test_logicalShift	tests.c	/^int test_logicalShift(int x, int n) {$/;"	f
+test_negate	tests.c	/^int test_negate(int x) {$/;"	f
+test_ptr	btest.h	/^} test_rec, *test_ptr;$/;"	t	typeref:struct:__anon1
+test_rec	btest.h	/^} test_rec, *test_ptr;$/;"	t	typeref:struct:__anon1
+test_set	decl.c	/^test_rec test_set[] = {$/;"	v
+test_tmin	tests.c	/^int test_tmin(void) {$/;"	f
+timeout_handler	btest.c	/^void timeout_handler(int sig) {$/;"	f
+timeout_limit	btest.c	/^static int timeout_limit = TIMEOUT_LIMIT; \/* -T *\/$/;"	v	file:
+tmin	bits.c	/^int tmin(void) {$/;"	f
+u2f	fshow.c	/^static float u2f(unsigned u)$/;"	f	file:
+u2f	tests.c	/^float u2f(unsigned u) {$/;"	f
+url_encode	Driverlib.pm	/^sub url_encode ($) {$/;"	s
+usage	btest.c	/^static void usage(char *cmd) {$/;"	f	file:
+usage	driver.pl	/^sub usage {$/;"	s
+usage	fshow.c	/^void usage(char *fname) {$/;"	f
+usage	ishow.c	/^void usage(char *fname) {$/;"	f
