@@ -2,12 +2,12 @@
 ## level1
 phase 1 is just the string comparision
 
-``
+```
 400ee4:	be 00 24 40 00       	mov    $0x402400,%esi
 400ee9:	e8 4a 04 00 00       	callq  401338 <strings_not_equal>
 400eee:	85 c0                	test   %eax,%eax
 400ef0:	74 05                	je     400ef7 <phase_1+0x17>
-``
+```
 
 The string is located at 0x402400, the value is
 `Border relations with Canada have never been better.`
@@ -16,7 +16,7 @@ The string is located at 0x402400, the value is
 
 Analysis of `read_six_number`
 
-``
+```
 000000000040145c <read_six_numbers>:                             # read six number on the rsi pointed stack by sequence
   40145c:	48 83 ec 18          	sub    $0x18,%rsp
   401460:	48 89 f2             	mov    %rsi,%rdx
@@ -35,30 +35,23 @@ Analysis of `read_six_number`
   401494:	e8 a1 ff ff ff       	callq  40143a <explode_bomb>
   401499:	48 83 c4 18          	add    $0x18,%rsp
   40149d:	c3                   	retq   
-``
+```
 
 The `%rsi` points to the caller's `%rsp`
 
 The parameters that passd to `sscanf` is as follows
 
-|-----|---------|-----------|
 | num | place   | value     |
 |-----|---------|-----------|
 | 1st | %rdx    | %rsi      |
-|-----|---------|-----------|
 | 2nd | %rcx    | %rsi + 4  |
-|-----|---------|-----------|
 | 3rd | %r8     | %rsi + 8  |
-|-----|---------|-----------|
 | 4th | %r9     | %rsi + 12 |
-|-----|---------|-----------|
 | 5th | (%rsp)  | %rsi + 16 |
-|-----|---------|-----------|
 | 6th | 8(%rsp) | %rsi + 20 |
-|-----|---------|-----------|
 
 Solve the phase 2
-``
+```
 400f0a:	83 3c 24 01          	cmpl   $0x1,(%rsp)
 400f0e:	74 20                	je     400f30 <phase_2+0x34>		# jump to L1
 400f10:	e8 25 05 00 00       	callq  40143a <explode_bomb>
@@ -76,16 +69,16 @@ Solve the phase 2
 400f35:	48 8d 6c 24 18       	lea    0x18(%rsp),%rbp
 400f3a:	eb db                	jmp    400f17 <phase_2+0x1b>  # jump to L2
 400f3c:	48 83 c4 28          	add    $0x28,%rsp              # END.
-``
+```
 
 The core checker of phase 2 is as follows:
-``
+```
 1st elem needs to be 1
 
 eax = n-1 th elem
 eax *= 2
 required eax = n th elem
-``
+```
 
 As a result, the answer should be: `1 2 4 8 16 32`
 
@@ -93,7 +86,7 @@ As a result, the answer should be: `1 2 4 8 16 32`
 
 Level  3 is simple
 
-``
+```
 400f5b:	e8 90 fc ff ff       	callq  400bf0 <__isoc99_sscanf@plt> # read one int
 400f60:	83 f8 01             	cmp    $0x1,%eax
 400f63:	7f 05                	jg     400f6a <phase_3+0x27>     # if > 1 jump to L2
@@ -125,7 +118,7 @@ Level  3 is simple
 400fc4:	e8 71 04 00 00       	callq  40143a <explode_bomb>
 400fc9:	48 83 c4 18          	add    $0x18,%rsp
 400fcd:	c3                   	retq   
-``
+```
 
 The phase 3 takes two argument. The first is an index in a switch statement,
 and the second is the value. It checks the value is equal to the certain value
@@ -157,21 +150,14 @@ The level6 is non-trival. It read 6 integers. For each input `i`, set `j = 7 - i
 reordering index for a linked list at `0x6032d0`. We need reorder the linked list
 as descending order. The linked list is as follows:
 
-|----------|------|
 | addr     | uint |
 |----------|------|
 | 0x6032d0 | 332  |
-|----------|------|
 | 0x6032e0 | 168  |
-|----------|------|
 | 0x6032f0 | 924  |
-|----------|------|
 | 0x603300 | 691  |
-|----------|------|
 | 0x603310 | 477  |
-|----------|------|
 | 0x603320 | 443  |
-|----------|------|
 
 The reoridering index should be `3 4 5 6 1 2`, so the input should be `4 3 2 1 6 5`
 
@@ -180,7 +166,7 @@ The reoridering index should be `3 4 5 6 1 2`, so the input should be `4 3 2 1 6
 When defuse all 6 phases, we can enter the secret phase. The entry point of
 secret phase is as follows:
 
-``
+```
 4015f0:	be 19 26 40 00       	mov    $0x402619,%esi
 4015f5:	bf 70 38 60 00       	mov    $0x603870,%edi
 4015fa:	e8 f1 f5 ff ff       	callq  400bf0 <__isoc99_sscanf@plt>
@@ -197,7 +183,7 @@ secret phase is as follows:
 401626:	e8 e5 f4 ff ff       	callq  400b10 <puts@plt>
 40162b:	b8 00 00 00 00       	mov    $0x0,%eax
 401630:	e8 0d fc ff ff       	callq  401242 <secret_phase>
-``
+```
 
 The `0x402619` stores to string `%d %d %s` and the `0x603879` stores the input
 strings of phase4. It means we need to append a string to phase4's input, and
