@@ -36,7 +36,6 @@ import ycm_core
 # CHANGE THIS LIST OF FLAGS. YES, THIS IS THE DROID YOU HAVE BEEN LOOKING FOR.
 flags = [
 '-Wall',
-'-std=c99',
 # ...and the same thing goes for the magic -x option which specifies the
 # language that the files to be compiled are written in. This is mostly
 # relevant for c++ headers.
