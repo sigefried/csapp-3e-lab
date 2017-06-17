@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include "csapp.h"
 #include <string.h>
+#include "cache.h"
 
 //#define DEBUG
 
-/* Recommended max cache and object sizes */
-#define MAX_CACHE_SIZE 1049000
-#define MAX_OBJECT_SIZE 102400
 
 /* You won't lose style points for including this long line in your code */
 static const char *user_agent_hdr = "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:10.0.3) Gecko/20120305 Firefox/10.0.3\r\n";
@@ -15,6 +13,7 @@ static const char *accept_encoding_hdr = "Accept-Encoding: gzip, deflate\r\n";
 static const char *connection_hdr = "Connection: close\r\n";
 static const char *proxy_connection_hdr = "Proxy-Connection: close\r\n\r\n";
 static const char *default_http_version = "HTTP/1.0";
+static const int USE_CACHE = 1;
 
 //funtions definitaion
 void serve(int fd);
@@ -24,6 +23,11 @@ int parse_uri(char *orig_uri, char *host, int *port, char *path);
 
 // thread function
 void *thread_serv(void *args);
+
+//for mutex
+memcache mc;
+volatile int reader_count;
+sem_t critical_lock, writer_lock;
 
 
 int main(int argc, char **argv) {
@@ -41,6 +45,12 @@ int main(int argc, char **argv) {
 	/* Ignore SIGPIPE signal */
 	Signal(SIGPIPE, SIG_IGN);
 
+	// init mutex related
+	reader_count = 0;
+	Sem_init(&critical_lock, 0 , 1);
+	Sem_init(&writer_lock, 0, 1);
+	cache_init(&mc);
+
 	listenfd = Open_listenfd(argv[1]);
 	while (1) {
 		clientlen = sizeof(clientaddr);
@@ -51,6 +61,7 @@ int main(int argc, char **argv) {
 		printf("[LOG]:Accepted connection from (%s, %s)\n", hostname, port);
 		Pthread_create(&tid, NULL, thread_serv, (void *)(&connfd));
 	}
+	free_cache(&mc);
 }
 
 void *thread_serv(void *args) {
@@ -74,6 +85,8 @@ void serve(int fd) {
 	char new_request[MAXLINE];
 	rio_t client_rio, server_rio;
 	int server_fd;
+	int cache_hit = 0;
+	cache_node *cn;
 	/* Read request line and headers */
 	Rio_readinitb(&client_rio, fd);
 	if (!Rio_readlineb(&client_rio, buf, MAXLINE))
@@ -101,6 +114,36 @@ void serve(int fd) {
 		printf("---------------------------------\n");
 	}
 #endif
+
+	if (USE_CACHE) {
+		cache_hit = 0;
+		P(&critical_lock);
+		reader_count++;
+		if (reader_count == 1) {
+			P(&writer_lock);
+		}
+		V(&critical_lock);
+
+		if ((cn = cache_get(&mc, uri)) != NULL) {
+			printf("[LOG]:cache HIT! uri: %s \n", uri);
+			Rio_writen(fd, cn->data, cn->sz_data);
+			printf("[LOG]:Cache retrive %d bytes content\n", cn->sz_data);
+			cache_hit = 1;
+		}
+
+		P(&critical_lock);
+		reader_count--;
+		if (reader_count == 0) {
+			V(&writer_lock);
+		}
+		V(&critical_lock);
+
+		if (cache_hit) {
+			return;
+		} else {
+			printf("[LOG]:cache MISS! uri: %s \n", uri);
+		}
+	}
 
 	//build_request
 	memset(new_request, 0, MAXLINE);
@@ -138,6 +181,9 @@ void serve(int fd) {
 	}
 	printf("[LOG]:Forwar %d bytes content\n", sum_byte);
 
+	if (USE_CACHE) {
+		cache_set(&mc, uri, payload, sum_byte);
+	}
 
 }
 
